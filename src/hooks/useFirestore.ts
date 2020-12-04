@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { firestore } from '@lib/firebase'
+import { firestore } from '@/lib/firebase'
 
 export const useFirestore = <T>() => {
   const [items, setItems] = useState<T[]>([])
@@ -15,11 +15,11 @@ export const useFirestore = <T>() => {
     return ref.set(paylaod)
   }
 
-  const getItems = async (collection: string, limit = 10): Promise<T[]> => {
+  const getItems = async (path: string): Promise<T[]> => {
     const result = await firestore
-      .collection(collection)
+      .collection(path)
       .orderBy('createdAt', 'desc')
-      .limit(limit)
+      .limit(10)
       .get()
     const data = result.docs.map((doc) => doc.data() as T)
     setItems(data)
