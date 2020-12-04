@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { auth } from '@lib/firebase'
+import { auth } from '@/lib/firebase'
 
 export const useAuth = () => {
   const [user, setUser] = useState(auth.currentUser)

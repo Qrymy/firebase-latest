@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { firestore } from '@lib/firebase'
+import { firestore } from '@/lib/firebase'
 
 export const useFirestore = <T>() => {
   const [items, setItems] = useState<T[]>([])
