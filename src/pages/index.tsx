@@ -35,8 +35,8 @@ const HomePage: NextPage = () => {
   return (
     <div>
       <TodoInput onSubmit={handleSubmit} />
-      {items.map(({ id, content }) => (
-        <div key={id}>{content}</div>
+      {items.map(({ createdAt, content }) => (
+        <div key={createdAt}>{content}</div>
       ))}
     </div>
   )
