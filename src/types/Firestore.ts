@@ -1,40 +1,46 @@
 import firebase from 'firebase/app'
 import { AnyRecord } from '@/types/AnyRecord'
 
-type DocumentSnapshot<T> = firebase.firestore.DocumentSnapshot<T>
-
 type ComparisonOperator = firebase.firestore.WhereFilterOp
 
 type OrderByDirection = firebase.firestore.OrderByDirection
 
+export type DocumentSnapshot = firebase.firestore.DocumentSnapshot
+
 const collections = {
-  dump: 'dump',
-  test: 'test',
+  todos: 'todos',
 } as const
 
 type Collection = keyof typeof collections
 
-export type CollectionPath = `/${Collection}`
+type CollectionPath = `/${Collection}`
 
-export type DocumentPath = `${CollectionPath}/${string}`
+type DocumentPath = string
 
-type WhereQuery<T extends AnyRecord, K extends keyof T> = [
-  K,
+type Where<T extends AnyRecord> = [
+  Extract<keyof T, string>,
   ComparisonOperator,
-  T[K]
+  Extract<T[keyof T], string | number | boolean | null | bigint>
 ]
 
-type Order<T extends AnyRecord> = [keyof T, OrderByDirection]
+type Order<T extends AnyRecord> = [Extract<keyof T, string>, OrderByDirection?]
 
-type FieldValue<T extends AnyRecord, K extends keyof T> = T[K]
-
-export type Query<T extends AnyRecord> = {
-  readonly where?: WhereQuery<T, keyof T>[]
-  readonly order?: Order<T>[]
+export type FirestoreQuery<T extends AnyRecord> = {
+  readonly where?: Where<T>[]
+  readonly orderBy?: Order<T>[]
   readonly limit?: number
   readonly limitToLast?: number
-  readonly startAt?: DocumentSnapshot<T> | FieldValue<T, keyof T>[]
-  readonly startAfter?: DocumentSnapshot<T> | FieldValue<T, keyof T>[]
-  readonly endBefore?: DocumentSnapshot<T> | FieldValue<T, keyof T>[]
-  readonly endAt?: DocumentSnapshot<T> | FieldValue<T, keyof T>[]
+  readonly startAt?: DocumentSnapshot | T[keyof T][]
+  readonly startAfter?: DocumentSnapshot | T[keyof T][]
+  readonly endBefore?: DocumentSnapshot | T[keyof T][]
+  readonly endAt?: DocumentSnapshot | T[keyof T][]
 }
+
+export type FirestoreParam<
+  T extends AnyRecord,
+  M extends 'document' | 'collection'
+> = M extends 'document'
+  ? [DocumentPath]
+  : M extends 'collection'
+  ? [CollectionPath, FirestoreQuery<T>?]
+  : never
