@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "analyze": "ANALYZE=true yarn build"
+    "analyze": "ANALYZE=true yarn build",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "firebase": "^8.1.2",
+    "firebase-admin": "^9.4.2",
     "next": "9.5.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
