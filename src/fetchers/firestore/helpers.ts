@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import { firestore } from '@/lib/firebase'
-import { FirestoreParam } from '@/types/Firestore'
+import { GetParam, DocumentPath, CollectionPath } from '@/types/Firestore'
 import { AnyRecord } from '@/types/AnyRecord'
 
 type CollectionRef =
@@ -11,7 +11,7 @@ export const createQuery = <
   T extends AnyRecord,
   M extends 'collection' | 'document'
 >(
-  ...[path, query]: FirestoreParam<T, M>
+  ...[path, query]: GetParam<T, M>
 ) => {
   let ref: CollectionRef = firestore.collection(path.slice(1))
 
@@ -73,7 +73,7 @@ export const createUniqueKey = <
   T extends AnyRecord,
   M extends 'document' | 'collection'
 >(
-  ...[path, query]: FirestoreParam<T, M>
+  ...[path, query]: GetParam<T, M>
 ) => {
   if (!query || Object.keys(query).length === 0) {
     return path
@@ -110,4 +110,14 @@ export const createUniqueKey = <
 
     return acc
   }, path)
+}
+
+export const createRef = (path: DocumentPath | CollectionPath) => {
+  const slashCounts = (path.match(/\//) ?? []).length
+
+  if (slashCounts === 2) {
+    return firestore.doc(path.slice(1))
+  }
+
+  return firestore.collection(path).doc()
 }

@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin'
 import { firestore } from '@/lib/admin'
-import { FirestoreParam } from '@/types/Firestore'
+import { GetParam } from '@/types/Firestore'
 import { AnyRecord } from '@/types/AnyRecord'
 
 type CollectionRef = admin.firestore.CollectionReference | admin.firestore.Query
@@ -9,7 +9,7 @@ export const createQuery = <
   T extends AnyRecord,
   M extends 'collection' | 'document'
 >(
-  ...[path, query]: FirestoreParam<T, M>
+  ...[path, query]: GetParam<T, M>
 ) => {
   let ref: CollectionRef = firestore.collection(path.slice(1))
 
@@ -71,7 +71,7 @@ export const createUniqueKey = <
   T extends AnyRecord,
   M extends 'document' | 'collection'
 >(
-  ...[path, query]: FirestoreParam<T, M>
+  ...[path, query]: GetParam<T, M>
 ) => {
   if (!query || Object.keys(query).length === 0) {
     return path

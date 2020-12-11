@@ -1,1 +1,5 @@
-export { createCollectionFetcher, createDocumentFetcher } from './firestore'
+export {
+  createSetFetcher,
+  createDocumentFetcher,
+  createCollectionFetcher,
+} from './firestore'

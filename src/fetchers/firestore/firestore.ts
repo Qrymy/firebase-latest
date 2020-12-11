@@ -1,10 +1,10 @@
 import { firestore } from '@/lib/firebase'
-import { FirestoreParam } from '@/types/Firestore'
+import { GetParam, SetParam } from '@/types/Firestore'
 import { AnyRecord } from '@/types/AnyRecord'
-import { createQuery, createUniqueKey } from './helpers'
+import { createQuery, createUniqueKey, createRef } from './helpers'
 
 export const createCollectionFetcher = <T extends AnyRecord>(
-  ...[path, query]: FirestoreParam<T, 'collection'>
+  ...[path, query]: GetParam<T, 'collection'>
 ) => {
   const generatedPath = createUniqueKey(path, query)
   const ref = createQuery(path, query)
@@ -19,7 +19,7 @@ export const createCollectionFetcher = <T extends AnyRecord>(
 }
 
 export const createDocumentFetcher = <T extends AnyRecord>(
-  ...[path]: FirestoreParam<T, 'document'>
+  ...[path]: GetParam<T, 'document'>
 ) => {
   const fetcher = async (_?: string) => {
     const doc = await firestore.doc(path.slice(1)).get()
@@ -28,4 +28,23 @@ export const createDocumentFetcher = <T extends AnyRecord>(
   }
 
   return [path, fetcher] as const
+}
+
+export const createSetFetcher = <T extends AnyRecord>(
+  ...[path, payload]: SetParam<T>
+) => {
+  const fetcher = (_?: string) => {
+    const ref = createRef(path)
+
+    payload = {
+      ...payload,
+      id: ref.id,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    }
+
+    return ref.set(payload)
+  }
+
+  return fetcher
 }

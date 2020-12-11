@@ -13,9 +13,9 @@ const collections = {
 
 type Collection = keyof typeof collections
 
-type CollectionPath = `/${Collection}`
+export type CollectionPath = `/${Collection}`
 
-type DocumentPath = string
+export type DocumentPath = string
 
 type Where<T extends AnyRecord> = [
   Extract<keyof T, string>,
@@ -36,7 +36,7 @@ export type FirestoreQuery<T extends AnyRecord> = {
   readonly endAt?: DocumentSnapshot | T[keyof T][]
 }
 
-export type FirestoreParam<
+export type GetParam<
   T extends AnyRecord,
   M extends 'document' | 'collection'
 > = M extends 'document'
@@ -44,3 +44,8 @@ export type FirestoreParam<
   : M extends 'collection'
   ? [CollectionPath, FirestoreQuery<T>?]
   : never
+
+export type SetParam<T extends AnyRecord> = [
+  DocumentPath | CollectionPath,
+  Partial<T>
+]
