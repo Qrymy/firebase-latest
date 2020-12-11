@@ -6,3 +6,4 @@ export type BrowserError =
   | firebase.auth.Error
   | firebase.storage.FirebaseStorageError
   | firebase.firestore.FirestoreError
+  | Error
