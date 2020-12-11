@@ -1,21 +1,13 @@
 import { AppProps } from 'next/app'
-import { SWRConfig } from 'swr'
 import { ErrorContainer } from '@/containers/ErrorContainer'
+import { SwrRoot } from '@/components/SwrRoot'
 
-const App = ({ Component, pageProps }: AppProps) => {
-  const { onError } = ErrorContainer.useContainer()
-
-  return (
-    <ErrorContainer.Provider>
-      <SWRConfig
-        value={{
-          onError,
-        }}
-      >
-        <Component {...pageProps} />
-      </SWRConfig>
-    </ErrorContainer.Provider>
-  )
-}
+const App = ({ Component, pageProps }: AppProps) => (
+  <ErrorContainer.Provider>
+    <SwrRoot>
+      <Component {...pageProps} />
+    </SwrRoot>
+  </ErrorContainer.Provider>
+)
 
 export default App
