@@ -12,7 +12,7 @@ export const config = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-if (!firebase.apps.length) {
+if (firebase.apps.length === 0) {
   firebase.initializeApp(config)
 }
 
