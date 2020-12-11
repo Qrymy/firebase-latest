@@ -44,8 +44,3 @@ export type GetParam<
   : M extends 'collection'
   ? [CollectionPath, FirestoreQuery<T>?]
   : never
-
-export type SetParam<T extends AnyRecord> = [
-  DocumentPath | CollectionPath,
-  Partial<T>
-]

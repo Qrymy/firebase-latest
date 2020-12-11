@@ -1,5 +1,5 @@
 import { firestore } from '@/lib/firebase'
-import { GetParam, SetParam } from '@/types/Firestore'
+import { GetParam, DocumentPath, CollectionPath } from '@/types/Firestore'
 import { AnyRecord } from '@/types/AnyRecord'
 import { createQuery, createUniqueKey, createRef } from './helpers'
 
@@ -31,9 +31,9 @@ export const createDocumentFetcher = <T extends AnyRecord>(
 }
 
 export const createSetFetcher = <T extends AnyRecord>(
-  ...[path, payload]: SetParam<T>
+  path: DocumentPath | CollectionPath
 ) => {
-  const fetcher = (_?: string) => {
+  const fetcher = (payload: Partial<T>) => {
     const ref = createRef(path)
 
     payload = {
