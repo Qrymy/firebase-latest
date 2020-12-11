@@ -1,7 +1,5 @@
 import firebase from 'firebase/app'
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-type AnyRecord = Record<string, any>
+import { AnyRecord } from '@/types/AnyRecord'
 
 type DocumentSnapshot<T> = firebase.firestore.DocumentSnapshot<T>
 
