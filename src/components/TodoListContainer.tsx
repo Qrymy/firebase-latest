@@ -24,7 +24,15 @@ export const TodoListContainer: FC<Props> = ({ initialData }) => {
   return (
     <div>
       <Link href="/create" passHref>
-        <a style={{ display: 'block', color: 'green' }}>Create</a>
+        <a
+          style={{
+            display: 'block',
+            color: 'green',
+            fontSize: 24,
+          }}
+        >
+          Create
+        </a>
       </Link>
       {data.map(({ id, content }) => (
         <Link href={`/${id}`} key={id} passHref>
