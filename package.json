@@ -12,9 +12,9 @@
   "dependencies": {
     "firebase": "^8.1.2",
     "firebase-admin": "^9.4.2",
-    "next": "9.5.4",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "next": "10.0.3",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
     "swr": "^0.3.9",
     "unstated-next": "^1.1.0"
   },
