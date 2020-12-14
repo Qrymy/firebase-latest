@@ -30,7 +30,7 @@ export const useFetcher = <Fn extends PromiseFn>(
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const call = async (...args: Parameters<Fn>) => {
+  const caller = async (...args: Parameters<Fn>) => {
     setIsLoading(true)
 
     try {
@@ -43,5 +43,5 @@ export const useFetcher = <Fn extends PromiseFn>(
     }
   }
 
-  return [value, isLoading, call]
+  return [value, isLoading, caller]
 }
