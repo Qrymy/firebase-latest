@@ -2,15 +2,9 @@ import { useState } from 'react'
 import { ErrorContainer } from '@/containers/ErrorContainer'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-type AnyPromise = Promise<any>
+type PromiseFn = (...args: any[]) => Promise<any>
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-type PromiseFn = (...args: any[]) => AnyPromise
-
-type PromiseValue<P extends PromiseFn> = P extends (
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  ...args: any[]
-) => Promise<infer U>
+type PromiseValue<P extends PromiseFn> = ReturnType<P> extends Promise<infer U>
   ? U
   : never
 
@@ -30,7 +24,7 @@ export const useFetcher = <Fn extends PromiseFn>(
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const call = async (...args: Parameters<Fn>) => {
+  const caller = async (...args: Parameters<Fn>) => {
     setIsLoading(true)
 
     try {
@@ -43,5 +37,5 @@ export const useFetcher = <Fn extends PromiseFn>(
     }
   }
 
-  return [value, isLoading, call]
+  return [value, isLoading, caller]
 }
