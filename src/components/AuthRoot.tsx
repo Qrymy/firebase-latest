@@ -6,7 +6,7 @@ import { useFetcher } from '@/hooks/useFetcher'
 export const AuthRoot: FC = ({ children }) => {
   const { user, isInitialized } = AuthContainer.useContainer()
 
-  const [, isLoading, signIn] = useFetcher(auth.signInAnonymously)
+  const [, isLoading, signIn] = useFetcher(async () => auth.signInAnonymously())
 
   useEffect(() => {
     if (!user && isInitialized) {
