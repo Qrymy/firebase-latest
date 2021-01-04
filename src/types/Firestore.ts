@@ -1,26 +1,48 @@
 import firebase from 'firebase/app'
 import { AnyRecord } from '@/types/AnyRecord'
 
+const COLLECTION = {
+  todos: 'todos',
+} as const
+
+/**
+ * @HACK
+ * HACK type suggestions.
+ */
+/* eslint-disable-next-line @typescript-eslint/ban-types */
+type StringHack = string & {}
+
+export type Firestore =
+  | FirebaseFirestore.Firestore
+  | firebase.firestore.Firestore
+
+export type CollectionRef =
+  | FirebaseFirestore.CollectionReference
+  | FirebaseFirestore.Query
+  | firebase.firestore.CollectionReference
+  | firebase.firestore.Query
+
+export type Snapshot =
+  | FirebaseFirestore.QueryDocumentSnapshot
+  | firebase.firestore.QueryDocumentSnapshot
+
 type ComparisonOperator = firebase.firestore.WhereFilterOp
 
 type OrderByDirection = firebase.firestore.OrderByDirection
 
 export type DocumentSnapshot = firebase.firestore.DocumentSnapshot
 
-const collections = {
-  todos: 'todos',
-} as const
+type Collection = typeof COLLECTION[keyof typeof COLLECTION]
 
-type Collection = keyof typeof collections
+export type CollectionPath = [Collection]
 
-export type CollectionPath = `/${Collection}`
-
-export type DocumentPath = string
+export type DocumentPath = [Collection, string]
 
 type Where<T extends AnyRecord> = [
-  Extract<keyof T, string>,
+  Extract<keyof T, string> | StringHack,
   ComparisonOperator,
-  Extract<T[keyof T], string | number | boolean | null | bigint>
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  any
 ]
 
 type Order<T extends AnyRecord> = [Extract<keyof T, string>, OrderByDirection?]
@@ -30,17 +52,8 @@ export type FirestoreQuery<T extends AnyRecord> = {
   readonly orderBy?: Order<T>[]
   readonly limit?: number
   readonly limitToLast?: number
-  readonly startAt?: DocumentSnapshot | T[keyof T][]
-  readonly startAfter?: DocumentSnapshot | T[keyof T][]
-  readonly endBefore?: DocumentSnapshot | T[keyof T][]
-  readonly endAt?: DocumentSnapshot | T[keyof T][]
+  readonly startAt?: DocumentSnapshot | T[keyof T][] | T[keyof T]
+  readonly startAfter?: DocumentSnapshot | T[keyof T][] | T[keyof T]
+  readonly endBefore?: DocumentSnapshot | T[keyof T][] | T[keyof T]
+  readonly endAt?: DocumentSnapshot | T[keyof T][] | T[keyof T]
 }
-
-export type GetParam<
-  T extends AnyRecord,
-  M extends 'document' | 'collection'
-> = M extends 'document'
-  ? [DocumentPath]
-  : M extends 'collection'
-  ? [CollectionPath, FirestoreQuery<T>?]
-  : never
