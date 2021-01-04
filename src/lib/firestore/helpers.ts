@@ -79,3 +79,15 @@ export const createRef = (
 
   return app.collection(paths[0]).doc()
 }
+
+export const createBatch = () => {
+  return firestore.batch()
+}
+
+export const createClientRef = (paths: DocumentPath | CollectionPath) => {
+  if (paths.length === 2) {
+    return firestore.doc(paths.join('/'))
+  }
+
+  return firestore.collection(paths[0]).doc()
+}

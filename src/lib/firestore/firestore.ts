@@ -1,4 +1,5 @@
-import { createRef, createQuery } from './helpers'
+import { createRef, createQuery, createBatch, createClientRef } from './helpers'
+import { chunkArray } from '@/utils/chunkArray'
 import {
   Snapshot,
   Firestore,
@@ -28,6 +29,31 @@ export const setDocument = async <T extends AnyRecord>(
   await ref.set(payload)
 
   return payload
+}
+
+export const batchSetDocuments = async <T extends AnyRecord>(
+  path: CollectionPath,
+  payloads: Partial<T>[]
+) => {
+  /**
+   * @see https://firebase.google.com/docs/firestore/manage-data/transactions?hl=ja
+   */
+  const chunked = chunkArray(payloads, 500)
+
+  const promises = chunked.map((todos) => {
+    const batch = createBatch()
+
+    todos.forEach((todo) => {
+      const ref = createClientRef(path)
+      const createdAt = getUnix()
+
+      batch.set(ref, { ...todo, id: ref.id, createdAt, updatedAt: createdAt })
+    })
+
+    return batch.commit()
+  })
+
+  return Promise.all(promises)
 }
 
 export const updateDocument = <T extends AnyRecord>(

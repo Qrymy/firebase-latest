@@ -4,6 +4,7 @@ import { firestore } from '@/lib/admin'
 import { listDocuments } from '@/lib/firestore'
 import { TodoListContainer } from '@/components/TodoListContainer'
 import { Todo } from '@/types/Todo'
+import { LIMITATION } from '@/const/Limitation'
 
 type Props = ComponentProps<typeof TodoListContainer>
 
@@ -12,6 +13,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     ['todos'],
     {
       orderBy: [['createdAt', 'desc']],
+      limit: LIMITATION.TODOS_LIST,
     },
     firestore
   )
