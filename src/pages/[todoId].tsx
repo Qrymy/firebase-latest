@@ -1,17 +1,14 @@
 import { ComponentProps } from 'react'
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next'
+import { firestore } from '@/lib/admin'
+import { listDocuments, getDocument } from '@/lib/firestore'
 import { TodoContainer } from '@/components/TodoContainer'
-import {
-  createDocumentFetcher,
-  createCollectionFetcher,
-} from '@/fetchers/admin'
 import { Todo } from '@/types/Todo'
 
 type Props = ComponentProps<typeof TodoContainer>
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const [, fetcher] = createCollectionFetcher<Todo>('/todos')
-  const todos = await fetcher()
+  const todos = await listDocuments<Todo>(['todos'], {}, firestore)
   const paths = todos.map(({ id }) => `/${id}`)
 
   return { paths, fallback: true }
@@ -19,8 +16,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const todoId = params?.todoId as string
-  const [, fetcher] = createDocumentFetcher<Todo>(`/todos/${todoId}`)
-  const initialData = await fetcher()
+  const initialData = await getDocument<Todo>(['todos', todoId], firestore)
 
   return { props: { todoId, initialData } }
 }

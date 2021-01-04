@@ -1,7 +1,7 @@
-import { FC, useMemo, useState, useCallback, ChangeEvent } from 'react'
+import { FC, useState, useCallback, ChangeEvent } from 'react'
 import { useRouter } from 'next/router'
+import { setDocument } from '@/lib/firestore'
 import { useFetcher } from '@/hooks/useFetcher'
-import { createSetFetcher } from '@/fetchers/firestore'
 import { Todo } from '@/types/Todo'
 
 export const CreateTodoContainer: FC = () => {
@@ -9,11 +9,9 @@ export const CreateTodoContainer: FC = () => {
 
   const { replace } = useRouter()
 
-  const fetcher = useMemo(() => {
-    return createSetFetcher<Todo>('/todos')
-  }, [])
-
-  const [, isLoading, create] = useFetcher(fetcher)
+  const [, isLoading, create] = useFetcher(async (payload: Partial<Todo>) => {
+    return setDocument<Todo>(['todos'], payload)
+  })
 
   const handleChange = useCallback(
     ({ target }: ChangeEvent<HTMLInputElement>) => {

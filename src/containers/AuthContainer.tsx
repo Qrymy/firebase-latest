@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react'
 import { createContainer } from 'unstated-next'
-import { auth } from '@/lib/firebase'
+import { firebase, auth } from '@/lib/firebase'
 
 const useAuth = () => {
-  const [user, setUser] = useState(auth.currentUser)
-
-  const [isInitialized, setIsInitialized] = useState(false)
+  const [user, setUser] = useState<firebase.User | null>()
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user)
-      setIsInitialized(true)
-    })
+    const unsubscribe = auth.onAuthStateChanged(setUser)
 
     return () => {
       unsubscribe()
     }
   }, [])
 
-  return { user, isInitialized }
+  useEffect(() => {
+    if (user === null) {
+      auth.signInAnonymously()
+    }
+  }, [user])
+
+  return { user }
 }
 
 export const AuthContainer = createContainer(useAuth)
