@@ -33,9 +33,11 @@ export const TodoListContainer: FC<Props> = ({ initialData }) => {
           Create
         </a>
       </Link>
-      {todos.map(({ id, content }) => (
+      {todos.map(({ id, content }, index) => (
         <Link href={`/${id}`} key={id} passHref>
-          <a style={{ display: 'block', marginTop: 12 }}>{content}</a>
+          <a style={{ display: 'block', marginTop: 12 }}>{`${
+            index + 1
+          }:${content}`}</a>
         </Link>
       ))}
       <button disabled={isEnded} onClick={handleClick}>
