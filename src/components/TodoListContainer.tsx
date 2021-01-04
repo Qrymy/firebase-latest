@@ -1,7 +1,7 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import Link from 'next/link'
-import useSWR from 'swr'
-import { createCollectionFetcher } from '@/fetchers/firestore'
+import { AuthContainer } from '@/containers/AuthContainer'
+import { useTodoList } from '@/hooks/useTodoList'
 import { Todo } from '@/types/Todo'
 
 type Props = {
@@ -9,15 +9,11 @@ type Props = {
 }
 
 export const TodoListContainer: FC<Props> = ({ initialData }) => {
-  const [key, fetcher] = useMemo(() => {
-    return createCollectionFetcher<Todo>('/todos', {
-      orderBy: [['createdAt', 'desc']],
-    })
-  }, [])
+  const { user } = AuthContainer.useContainer()
 
-  const { data } = useSWR(key, fetcher, { initialData })
+  const { todos, loading } = useTodoList(user?.uid, initialData)
 
-  if (typeof data === 'undefined') {
+  if (loading.initial) {
     return <div>Loading...</div>
   }
 
@@ -34,7 +30,7 @@ export const TodoListContainer: FC<Props> = ({ initialData }) => {
           Create
         </a>
       </Link>
-      {data.map(({ id, content }) => (
+      {todos.map(({ id, content }) => (
         <Link href={`/${id}`} key={id} passHref>
           <a style={{ display: 'block', marginTop: 12 }}>{content}</a>
         </Link>
