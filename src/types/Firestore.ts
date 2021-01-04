@@ -52,8 +52,8 @@ export type FirestoreQuery<T extends AnyRecord> = {
   readonly orderBy?: Order<T>[]
   readonly limit?: number
   readonly limitToLast?: number
-  readonly startAt?: DocumentSnapshot | T[keyof T][] | T[keyof T]
-  readonly startAfter?: DocumentSnapshot | T[keyof T][] | T[keyof T]
-  readonly endBefore?: DocumentSnapshot | T[keyof T][] | T[keyof T]
-  readonly endAt?: DocumentSnapshot | T[keyof T][] | T[keyof T]
+  readonly startAt?: DocumentSnapshot
+  readonly startAfter?: DocumentSnapshot
+  readonly endBefore?: DocumentSnapshot
+  readonly endAt?: DocumentSnapshot
 }

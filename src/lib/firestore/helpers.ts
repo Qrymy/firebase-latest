@@ -91,3 +91,7 @@ export const createClientRef = (paths: DocumentPath | CollectionPath) => {
 
   return firestore.collection(paths[0]).doc()
 }
+
+export const getSnapshot = (paths: DocumentPath) => {
+  return firestore.doc(paths.join('/')).get()
+}

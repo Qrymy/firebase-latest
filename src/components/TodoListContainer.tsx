@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useCallback } from 'react'
 import Link from 'next/link'
 import { AuthContainer } from '@/containers/AuthContainer'
 import { useTodoList } from '@/hooks/useTodoList'
@@ -11,11 +11,14 @@ type Props = {
 export const TodoListContainer: FC<Props> = ({ initialData }) => {
   const { user } = AuthContainer.useContainer()
 
-  const { todos, loading } = useTodoList(user?.uid, initialData)
+  const { todos, isEnded, increment, loading } = useTodoList(
+    user?.uid,
+    initialData
+  )
 
-  if (loading.initial) {
-    return <div>Loading...</div>
-  }
+  const handleClick = useCallback(() => {
+    increment()
+  }, [increment])
 
   return (
     <div>
@@ -30,11 +33,16 @@ export const TodoListContainer: FC<Props> = ({ initialData }) => {
           Create
         </a>
       </Link>
-      {todos.map(({ id, content }) => (
+      {todos.map(({ id, content }, index) => (
         <Link href={`/${id}`} key={id} passHref>
-          <a style={{ display: 'block', marginTop: 12 }}>{content}</a>
+          <a style={{ display: 'block', marginTop: 12 }}>{`${
+            index + 1
+          }:${content}`}</a>
         </Link>
       ))}
+      <button disabled={isEnded} onClick={handleClick}>
+        {loading.more ? 'fetching...' : 'Load more'}
+      </button>
     </div>
   )
 }
