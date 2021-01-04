@@ -1,5 +1,6 @@
 export {
   setDocument,
+  batchSetDocuments,
   updateDocument,
   deleteDocument,
   getDocument,
