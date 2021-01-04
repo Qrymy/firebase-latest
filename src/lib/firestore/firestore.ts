@@ -45,8 +45,9 @@ export const batchSetDocuments = async <T extends AnyRecord>(
 
     todos.forEach((todo) => {
       const ref = createClientRef(path)
+      const createdAt = getUnix()
 
-      batch.set(ref, todo)
+      batch.set(ref, { ...todo, id: ref.id, createdAt, updatedAt: createdAt })
     })
 
     return batch.commit()
