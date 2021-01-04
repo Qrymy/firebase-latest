@@ -1,8 +1,7 @@
 import { FC, useCallback } from 'react'
 import Link from 'next/link'
 import { AuthContainer } from '@/containers/AuthContainer'
-import { useTodoListContainer } from '@/hooks/useTodoListContainer'
-import { TodoList } from '@/components/TodoList'
+import { useTodoList } from '@/hooks/useTodoList'
 import { Todo } from '@/types/Todo'
 
 type Props = {
@@ -12,15 +11,10 @@ type Props = {
 export const TodoListContainer: FC<Props> = ({ initialData }) => {
   const { user } = AuthContainer.useContainer()
 
-  const {
-    isEnded,
-    isLoading,
-    cursors,
-    setIsEnded,
-    setIsLoading,
-    setCursor,
-    increment,
-  } = useTodoListContainer()
+  const { todos, isEnded, increment, loading } = useTodoList(
+    user?.uid,
+    initialData
+  )
 
   const handleClick = useCallback(() => {
     increment()
@@ -39,27 +33,13 @@ export const TodoListContainer: FC<Props> = ({ initialData }) => {
           Create
         </a>
       </Link>
-      <TodoList
-        cursorOrInitialData={initialData}
-        isLast={cursors.length === 0}
-        onChangeCursor={setCursor}
-        onChangeIsEnded={setIsEnded}
-        onChangeIsLoading={setIsLoading}
-        uid={user?.uid}
-      />
-      {cursors.map((cursor, index) => (
-        <TodoList
-          cursorOrInitialData={initialData}
-          isLast={cursors[cursors.length - 1] === index}
-          key={cursor}
-          onChangeCursor={setCursor}
-          onChangeIsEnded={setIsEnded}
-          onChangeIsLoading={setIsLoading}
-          uid={user?.uid}
-        />
+      {todos.map(({ id, content }) => (
+        <Link href={`/${id}`} key={id} passHref>
+          <a style={{ display: 'block', marginTop: 12 }}>{content}</a>
+        </Link>
       ))}
       <button disabled={isEnded} onClick={handleClick}>
-        {isLoading ? 'fetching...' : 'Load more'}
+        {loading.more ? 'fetching...' : 'Load more'}
       </button>
     </div>
   )
