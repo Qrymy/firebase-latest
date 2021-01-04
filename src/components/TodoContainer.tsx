@@ -1,6 +1,6 @@
-import { FC, useMemo } from 'react'
-import useSWR from 'swr'
-import { createDocumentFetcher } from '@/fetchers/firestore'
+import { FC } from 'react'
+import { AuthContainer } from '@/containers/AuthContainer'
+import { useTodo } from '@/hooks/useTodo'
 import { Todo } from '@/types/Todo'
 
 type Props = {
@@ -9,15 +9,13 @@ type Props = {
 }
 
 export const TodoContainer: FC<Props> = ({ todoId, initialData }) => {
-  const [key, fetcher] = useMemo(() => {
-    return createDocumentFetcher(`/todos/${todoId}`)
-  }, [todoId])
+  const { user } = AuthContainer.useContainer()
 
-  const { data } = useSWR(key, fetcher, { initialData })
+  const { todo, loading } = useTodo(todoId, user?.uid, initialData)
 
-  if (typeof data === 'undefined') {
+  if (loading.initial) {
     return <div>Loading...</div>
   }
 
-  return <div>{JSON.stringify(data)}</div>
+  return <div>{JSON.stringify(todo)}</div>
 }
