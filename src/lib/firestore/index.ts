@@ -6,3 +6,4 @@ export {
   getDocument,
   listDocuments,
 } from './firestore'
+export { getSnapshot } from './helpers'

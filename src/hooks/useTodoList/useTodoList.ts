@@ -6,16 +6,18 @@ import { LIMITATION } from '@/const/Limitation'
 
 export const useTodoList = (uid?: string, initialData?: Todo[]) => {
   const getKey = (pageIndex: number, previousPageData: Todo[] | null) => {
+    const prevOrInitialData = previousPageData || initialData
+
     if (uid && pageIndex === 0) {
       return '/todos'
     }
 
     if (
       uid &&
-      previousPageData &&
-      previousPageData.length === LIMITATION.TODOS_LIST
+      prevOrInitialData &&
+      prevOrInitialData.length === LIMITATION.TODOS_LIST
     ) {
-      const cursor = previousPageData[previousPageData.length - 1].createdAt
+      const cursor = prevOrInitialData[prevOrInitialData.length - 1].id
 
       return `/todos/${cursor}`
     }
@@ -23,9 +25,8 @@ export const useTodoList = (uid?: string, initialData?: Todo[]) => {
     return null
   }
 
-  const { data, setSize } = useSWRInfinite(getKey, fetcher, {
+  const { data, size, setSize } = useSWRInfinite(getKey, fetcher, {
     initialData: initialData && [initialData],
-    initialSize: LIMITATION.TODOS_LIST,
   })
 
   const isEnded = useMemo(() => {
@@ -37,7 +38,7 @@ export const useTodoList = (uid?: string, initialData?: Todo[]) => {
   }, [data])
 
   const increment = () => {
-    return setSize((size) => size + 1)
+    setSize(size + 1)
   }
 
   const loading = {
