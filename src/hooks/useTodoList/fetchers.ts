@@ -8,7 +8,7 @@ export const fetcher = async (key: string) => {
   const todos = await listDocuments<Todo>(['todos'], {
     orderBy: [['createdAt', 'desc']],
     limit: LIMITATION.TODOS_LIST,
-    ...(cursor ? { startAfter: cursor } : {}),
+    ...(cursor ? { startAfter: parseInt(cursor, 10) } : {}),
   })
 
   return todos
